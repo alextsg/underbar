@@ -8,6 +8,7 @@ var _ = {};
   // seem very useful, but remember it--if a function needs to provide an
   // iterator when the user does not pass one in, this will be handy.
   _.identity = function(val) {
+    return val;
   };
 
   /**
@@ -51,7 +52,6 @@ var _ = {};
       for (var i=0;i<collection.length;i++) {
         iterator(collection[i],i,collection);
       }
-      return collection.length;
     } else {
       for (var key in collection) {
         iterator(collection[key],key,collection);
@@ -78,16 +78,41 @@ var _ = {};
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
+    if (Array.isArray(collection)) {
+      var filtered = [];
+      for (var i=0;i<collection.length;i++){
+        if (test(collection[i])){
+          filtered.push(collection[i]);
+        }
+      }
+      return filtered;
+    }
   };
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
+    var temp = _.filter(collection, test);
+    var filtered = collection;
+    for (var i=0;i<temp.length;i++){
+      var index = collection.indexOf(temp[i]);
+      filtered.splice(index,1);
+    }
+    return filtered;
+
   };
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array) {
+    var temp = array;
+    var uniqued = [];
+    for (var i=0;i<array.length;i++){
+      if (uniqued.indexOf(temp[i])==-1){
+        uniqued.push(temp[i]);
+      }
+    }
+    return uniqued;
   };
 
 
@@ -96,6 +121,14 @@ var _ = {};
     // map() is a useful primitive iteration function that works a lot
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
+    var temp = [];
+    if (Array.isArray(collection)) {
+      var temp = [];
+      for (var i=0;i<collection.length;i++) {
+        temp.push(iterator(collection[i]));
+      }
+      return temp;
+    } 
   };
 
   /*
@@ -119,6 +152,11 @@ var _ = {};
   // Calls the method named by functionOrKey on each value in the list.
   // Note: you will nead to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+    var temp = [];
+    for (var i=0;i<collection.length;i++){
+      temp.push(functionOrKey(collection[i]));
+    }
+    return temp;
   };
 
   // Reduces an array or object to a single value by repetitively calling

@@ -154,7 +154,11 @@ var _ = {};
   _.invoke = function(collection, functionOrKey, args) {
     var temp = [];
     for (var i=0;i<collection.length;i++){
-      temp.push(functionOrKey(collection[i]));
+      if (typeof functionOrKey==='function'){
+        temp.push(functionOrKey.apply(collection[i]));
+      } else {
+        temp.push(collection[i][functionOrKey]());
+      }
     }
     return temp;
   };

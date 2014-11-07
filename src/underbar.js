@@ -369,6 +369,14 @@ var _ = {};
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var temparray = Array.prototype.slice.call(array,0);
+    for (var i = 0;i<temparray.length;i++){
+      var rand = Math.floor(Math.random()*temparray.length);
+      var tempitem = temparray[i];
+      temparray[i] = temparray[rand];
+      temparray[rand] = tempitem;
+    }
+    return temparray;
   };
 
 

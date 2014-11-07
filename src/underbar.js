@@ -227,6 +227,18 @@ var _ = {};
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    return _.reduce(collection, function(match, item){
+      if (typeof iterator === 'function'){
+        if (iterator(item)){
+          match = true;
+        }
+      } else {
+        if (item){
+          match = true;
+        }
+      }
+      return match;
+    },false);
   };
 
 
@@ -249,11 +261,30 @@ var _ = {};
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    for (var i=1;i<arguments.length;i++){
+      for (var key in arguments[i]){
+        obj[key]= arguments[i][key];
+      }
+    }
+    return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    for (var i=1;i<arguments.length;i++){
+      for (var key in arguments[i]){
+        for (var key2 in obj){
+          if (key2 == key){
+            var double = true;
+          }
+        }
+        if (!double){
+        obj[key]= arguments[i][key];
+        }
+      }
+    }
+    return obj;
   };
 
 
@@ -295,6 +326,22 @@ var _ = {};
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var alreadyobj = {};
+    var result;
+    return function() {
+      for (var key in alreadyobj) {
+        if (key == arguments[0]){
+          //return alreadyobj[key];
+          var alreadykey = true;
+          return alreadyobj[key];
+        }
+      }
+      if (!alreadykey){
+        result = func.apply(this, arguments);
+        alreadyobj[arguments[0]] = result;
+        return result;
+      }
+    }
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -304,6 +351,10 @@ var _ = {};
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    var arr = Array.prototype.slice.call(arguments,2);
+    return setTimeout(function(){
+      func.apply(this,arr);
+    }, wait);
   };
 
 

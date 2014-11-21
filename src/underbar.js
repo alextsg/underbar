@@ -331,7 +331,6 @@ var _ = {};
     return function() {
       for (var key in alreadyobj) {
         if (key == arguments[0]){
-          //return alreadyobj[key];
           var alreadykey = true;
           return alreadyobj[key];
         }
@@ -399,6 +398,22 @@ var _ = {};
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
+    var final = [];
+    var temp = [];
+    var longest = 0;
+    for (var i=0;i<arguments.length;i++){
+      if (arguments[i].length > longest){
+        longest = arguments[i].length;
+      }
+    }
+    for (var i=0;i<longest;i++){
+      temp = [];
+      for (var j=0;j<arguments.length;j++){
+        temp.push(arguments[j][i]);
+      }
+      final.push(temp);
+    }
+    return final;
   };
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
@@ -406,11 +421,42 @@ var _ = {};
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+    var final = [];
+    function add(nested){
+      for (var i=0;i<nested.length;i++){
+        if (Array.isArray(nested[i])){
+          add(nested[i]);
+        }
+        else {
+          final.push(nested[i]);
+        }
+      };
+    };
+    add(nestedArray);
+    return final;
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
+    //var result = [];
+    var longest = 0;
+    for (var i=0;i<arguments.length;i++){
+      if (arguments[i].length>longest){
+        longest = arguments[i].length;
+      }
+    };
+    var temp = arguments[0].slice(0);
+      for (var i=1;i<arguments.length;i++){
+        var temp2 = [];
+        for (var j=0;j<longest;j++){
+          if (temp.indexOf(arguments[i][j]) != -1){
+            temp2.push(arguments[i][j]);
+          }
+        temp = temp2.slice(0);
+        }
+      }
+    return temp;
   };
 
   // Take the difference between one array and a number of other arrays.
